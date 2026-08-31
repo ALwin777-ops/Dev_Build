@@ -1,0 +1,37 @@
+name: "Terraform CI/CD Pipeline"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  terraform-ci:
+    name: "Validate and Plan Infrastructure"
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout repository code
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 2. Setup Terraform CLI on the GitHub runner
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      # 3. Check for proper code formatting
+      - name: Terraform Format Check
+        run: terraform fmt -check
+
+      # 4. Initialize Terraform working directory
+      - name: Terraform Init
+        run: terraform init
+
+      # 5. Validate syntax and configuration
+      - name: Terraform Validate
+        run: terraform validate
+
+      # 6. Run dry-run deployment plan
+      - name: Terraform Plan
+        run: terraform plan
